@@ -24,7 +24,7 @@ python example_test_encoding.py "A text to encode" --model="ViT-B/32"
 in `src/scripts/`. This will encode the text into a feature tensor using a pre-trained CLIP model.
 
 ### Contribution
-To run the checks locally at each commit, run
+To run the checks locally at each commit, install pre-commit in the repo
 ```
 pre-commit install
 ```
