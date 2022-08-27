@@ -11,9 +11,11 @@ def load_clip_model(model_name="ViT-B/32",
         Tuple[ClipModel, Compose]:
     """Loads a CLIP model, together with its associated preprocessing steps.
 
-    :param model_name: The name of the CLIP model to load. See clip.available_models() for a complete list of available models.
+    :param model_name: The name of the CLIP model to load. See clip.available_models() for a complete list of available
+                       models.
     :param device: The device (cpu, cuda, ...) on which the operations take place.
-    :return: A tuple containing the loaded CLIP model and the associated Compose transform to apply to the images input to the image encoder.
+    :return: A tuple containing the loaded CLIP model and the associated Compose transform to apply to the images input
+             to the image encoder.
     """
 
     model, preprocess = clip.load(model_name, device=device)
