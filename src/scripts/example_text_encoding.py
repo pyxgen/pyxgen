@@ -2,8 +2,8 @@
 Example text encoding using CLIP.
 
 Usage:
-    example_test_encoding.py <text>
-    example_test_encoding.py <text> --model=<name>
+    example_text_encoding.py <text>
+    example_text_encoding.py <text> --model=<name>
 
 Options:
     -h --help        Show this screen.
@@ -23,13 +23,13 @@ from clip_utils import encode_text, load_clip_model
 
 def main():
     arguments = docopt(__doc__)
-    text = arguments['<text>']
-    model_name = arguments['--model']
+    text = arguments["<text>"]
+    model_name = arguments["--model"]
     if model_name is None:
         model_name = "ViT-B/32"
 
     if model_name not in clip.available_models():
-        raise ValueError(f'No CLIP model named {model_name}')
+        raise ValueError(f"No CLIP model named {model_name}")
 
     print(f'Using model {model_name} to encode text "{text}"')
 
