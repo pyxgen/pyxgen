@@ -1,4 +1,4 @@
-# [WORK IN PROGRESS] pyxgen 
+# [WORK IN PROGRESS] pyxgen
 Pixel art generation from text prompts using AI.
 
 ### Pipeline
@@ -9,7 +9,7 @@ Pixel art generation from text prompts using AI.
 - Nvidia GPU with CUDA version > 11.3
 
 ### Installation
-Run 
+Run
 ```
 pip install -r requirements.txt
 ```
@@ -22,3 +22,9 @@ To do this, run
 python example_test_encoding.py "A text to encode" --model="ViT-B/32"
 ```
 in `src/scripts/`. This will encode the text into a feature tensor using a pre-trained CLIP model.
+
+### Contribution
+To run the checks locally at each commit, run
+```
+pre-commit install
+```
