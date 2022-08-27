@@ -16,3 +16,5 @@ urllib3==1.26.12
 wcwidth==0.2.5
 
 git+https://github.com/openai/CLIP
+
+docopt~=0.6.2
