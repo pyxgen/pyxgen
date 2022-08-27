@@ -29,15 +29,15 @@ def main():
         model_name = "ViT-B/32"
 
     if model_name not in clip.available_models():
-        raise ValueError('No CLIP model named {}'.format(model_name))
+        raise ValueError(f'No CLIP model named {model_name}')
 
-    print('Using model {} to encode text "{}"'.format(model_name, text))
+    print(f'Using model {model_name} to encode text "{text}"')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model, _ = load_clip_model(model_name, device=device)
     text_features = encode_text(text, model, device)
 
-    print("Text encoding shape: {}".format(text_features.shape))
+    print(f"Text encoding shape: {text_features.shape}")
 
 
 if __name__ == "__main__":
