@@ -1,6 +1,9 @@
 # [WORK IN PROGRESS] pyxgen 
 Pixel art generation from text prompts using AI.
 
+### Pipeline
+- Text encoding using [CLIP](https://github.com/openai/CLIP)
+
 ### Recommendations
 - Python 3.10.6
 - Nvidia GPU with CUDA version > 11.3
