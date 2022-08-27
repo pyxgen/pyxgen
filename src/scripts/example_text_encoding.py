@@ -34,7 +34,7 @@ def main():
     print('Using model {} to encode text "{}"'.format(model_name, text))
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    model, preprocessor = load_clip_model(model_name, device=device)
+    model, _ = load_clip_model(model_name, device=device)
     text_features = encode_text(text, model, device)
 
     print("Text encoding shape: {}".format(text_features.shape))
