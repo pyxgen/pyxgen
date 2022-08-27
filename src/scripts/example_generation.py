@@ -16,9 +16,11 @@ Options:
 import clip
 import torch
 from docopt import docopt
-from torch.nn import CosineSimilarity
+from torchvision.transforms import ToTensor, ToPILImage
+from PIL import Image
 
-from clip_utils import load_clip_model, encode_image, encode_text
+from clip_utils import load_clip_model, encode_text
+from image_generation import baseline_generator
 
 
 def main():
@@ -31,27 +33,30 @@ def main():
     if model_name not in clip.available_models():
         raise ValueError(f'No CLIP model named {model_name}')
 
+    green_image = Image.open("sample_images/green.png")
+    print(green_image.getpixel((100, 100)))
+    print(green_image.convert("RGB").getpixel((100, 100)))
+    print(ToTensor()(green_image))
+    print(ToPILImage()((ToTensor()(green_image))).getpixel((100,100)))
+    green_image.show()
+
     print(f'Using model {model_name} to encode text "{text}"')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model, preprocess = load_clip_model(model_name, device=device)
+    print(preprocess)
     text_features = encode_text(text, model, device)
 
     print(f"Text encoding shape: {text_features.shape}")
 
-    print("Generating random image")
+    print("Initializing image")
 
     resolution = model.visual.input_resolution
 
-    dummy_image = torch.normal(mean=0., std=1., size=(1, 3, resolution, resolution), device=device)
-    print(dummy_image.shape)
-    image_features = encode_image(dummy_image, model)
-
-    print(f"Image encoding shape: {image_features.shape}")
-
-    cos = CosineSimilarity()
-    similarity = cos(text_features, image_features)
-    print(f"Similarity between text encoding and image encoding: {similarity.item():.4f}")
+    # dummy_image = torch.normal(mean=0., std=1., size=(1, 3, resolution, resolution),
+    #                            device=device, requires_grad=True)
+    dummy_image = torch.zeros(size=(1, 3, resolution, resolution), device=device, requires_grad=True)
+    baseline_generator(model, preprocess, dummy_image, text_features)
 
 
 if __name__ == "__main__":
