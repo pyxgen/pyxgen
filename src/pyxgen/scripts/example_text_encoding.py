@@ -18,7 +18,7 @@ import clip
 import torch
 from docopt import docopt
 
-from clip_utils import encode_text, load_clip_model
+from pyxgen.clip_utils import encode_text, load_clip_model
 
 
 def main():
