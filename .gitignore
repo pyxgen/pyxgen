@@ -1,8 +1,9 @@
 # Jupyter notebooks
 *.ipynb
 
-# PyCharm project
+# IDE project
 .idea/
+.vscode/
 
 # Data folder
 data/
