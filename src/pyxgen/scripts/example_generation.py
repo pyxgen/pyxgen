@@ -20,7 +20,7 @@ import sys
 
 sys.path.append("../..")
 from pyxgen.clip_utils import load_clip_model, encode_text
-from pyxgen.image_generation import baseline_generator
+from pyxgen.image_generation import baseline_generator, generator_with_transforms
 
 
 def main():
@@ -45,7 +45,7 @@ def main():
 
     print("Initializing image")
 
-    resolution = model.visual.input_resolution
+    resolution = 256
 
     init = arguments["--init"]
     if init is None:
@@ -58,7 +58,7 @@ def main():
     else:
         raise ValueError(f"No image initialization scheme named {init}")
 
-    baseline_generator(model, preprocess, dummy_image, text_features)
+    generator_with_transforms(model, preprocess, dummy_image, text_features)
 
 
 if __name__ == "__main__":
