@@ -17,19 +17,22 @@ Options:
 import clip
 import torch
 from docopt import docopt
+import sys
 
+
+sys.path.append("../..")
 from pyxgen.clip_utils import encode_text, load_clip_model
 
 
 def main():
     arguments = docopt(__doc__)
-    text = arguments['<text>']
-    model_name = arguments['--model']
+    text = arguments["<text>"]
+    model_name = arguments["--model"]
     if model_name is None:
         model_name = "ViT-B/32"
 
     if model_name not in clip.available_models():
-        raise ValueError(f'No CLIP model named {model_name}')
+        raise ValueError(f"No CLIP model named {model_name}")
 
     print(f'Using model {model_name} to encode text "{text}"')
 

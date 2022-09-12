@@ -16,7 +16,9 @@ Options:
 import clip
 import torch
 from docopt import docopt
+import sys
 
+sys.path.append("../..")
 from pyxgen.clip_utils import load_clip_model, encode_text
 from pyxgen.image_generation import baseline_generator
 
@@ -24,14 +26,14 @@ from pyxgen.image_generation import baseline_generator
 def main():
     arguments = docopt(__doc__)
 
-    text = arguments['<text>']
+    text = arguments["<text>"]
 
-    model_name = arguments['--model']
+    model_name = arguments["--model"]
     if model_name is None:
         model_name = "ViT-B/32"
 
     if model_name not in clip.available_models():
-        raise ValueError(f'No CLIP model named {model_name}')
+        raise ValueError(f"No CLIP model named {model_name}")
 
     print(f'Using model {model_name} to encode text "{text}"')
 
@@ -45,16 +47,16 @@ def main():
 
     resolution = model.visual.input_resolution
 
-    init = arguments['--init']
+    init = arguments["--init"]
     if init is None:
-        init = 'normal'
+        init = "normal"
 
-    if init == 'normal':
-        dummy_image = torch.normal(mean=0., std=1., size=(1, 3, resolution, resolution), device=device, requires_grad=True)
-    elif init == 'zeros':
+    if init == "normal":
+        dummy_image = torch.normal(mean=0.0, std=1.0, size=(1, 3, resolution, resolution), device=device, requires_grad=True)
+    elif init == "zeros":
         dummy_image = torch.zeros(size=(1, 3, resolution, resolution), device=device, requires_grad=True)
     else:
-        raise ValueError(f'No image initialization scheme named {init}')
+        raise ValueError(f"No image initialization scheme named {init}")
 
     baseline_generator(model, preprocess, dummy_image, text_features)
 
