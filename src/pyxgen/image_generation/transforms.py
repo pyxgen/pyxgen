@@ -1,7 +1,7 @@
 from clip.model import CLIP as ClipModel
 import torch
 from torch.nn import CosineSimilarity, Sigmoid
-from torchvision.transforms import Compose, ToPILImage, RandomCrop, Resize
+from torchvision.transforms import Compose, ToPILImage, RandomCrop, Resize, ColorJitter, RandomPerspective
 
 torch.manual_seed(17)
 
@@ -14,22 +14,20 @@ def generator_with_transforms(model: ClipModel, preprocess: Compose, unbounded_i
     normalize = preprocess.transforms[-1]
     to_pil = ToPILImage()
 
-    n_transforms = 3
-    crop_size = (model.visual.input_resolution, model.visual.input_resolution)
+    transformer = RandomTransforms(n_transforms=10, crop_size=(model.visual.input_resolution, model.visual.input_resolution))
 
     for i in range(n_iterations):
 
         image = Sigmoid()(unbounded_image)  # Bound the image
         loss = 0
 
-        for transform_i in range(n_transforms):
+        repeated_text_features = text_features.repeat(transformer.n_transforms, 1)
+        transformed_images = transformer.apply_random_transforms(image)
 
-            random_crop = RandomCrop(crop_size)(image)
-            normalized_crop = normalize(random_crop)
-            crop_features = model.encode_image(normalized_crop)
-            loss += -cos(text_features, crop_features)
+        normalized_crops = normalize(transformed_images)
 
-        loss /= n_transforms
+        crops_features = model.encode_image(normalized_crops)
+        loss = -cos(repeated_text_features, crops_features).sum() / transformer.n_transforms
 
         optimizer.zero_grad()
         loss.backward()
@@ -47,3 +45,18 @@ def generator_with_transforms(model: ClipModel, preprocess: Compose, unbounded_i
 
                 pil_image = to_pil(image.squeeze(0))
                 pil_image.show()
+
+
+class RandomTransforms:
+    def __init__(self, n_transforms, crop_size) -> None:
+
+        self.n_transforms = n_transforms
+        self.crop_size = crop_size
+
+    def apply_random_transforms(self, image: torch.Tensor):
+        repeated_images = image.repeat(self.n_transforms, 1, 1, 1)
+        transformed_images = RandomCrop(self.crop_size)(repeated_images)
+        transformed_images = ColorJitter()(transformed_images)
+        transformed_images = RandomPerspective()(transformed_images)
+
+        return transformed_images
