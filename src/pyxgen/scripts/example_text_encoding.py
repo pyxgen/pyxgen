@@ -29,7 +29,7 @@ def main():
         model_name = "ViT-B/32"
 
     if model_name not in clip.available_models():
-        raise ValueError(f'No CLIP model named {model_name}')
+        raise ValueError(f"No CLIP model named {model_name}")
 
     print(f'Using model {model_name} to encode text "{text}"')
 
