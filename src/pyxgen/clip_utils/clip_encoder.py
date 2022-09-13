@@ -37,3 +37,16 @@ def encode_text(text: str, model: ClipModel, device: torch.device | str) -> torc
         text_features = model.encode_text(tokenized_text)
 
     return text_features
+
+
+def encode_image(image: torch.Tensor, model: ClipModel) -> torch.Tensor:
+    """Encodes a given text using a given CLIP model.
+
+    :param image: The pre-processed image to encode.
+    :param model: The model which encodes the image.
+    :return: The features corresponding to the encoded image.
+    """
+
+    image_features = model.encode_image(image)
+
+    return image_features

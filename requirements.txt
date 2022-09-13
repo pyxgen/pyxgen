@@ -20,3 +20,24 @@ pre-commit
 git+https://github.com/openai/CLIP
 
 docopt~=0.6.2
+
+# Omegaconf for reading config files
+omegaconf==2.1.1
+
+# Copied from taming-transformers environment.yaml
+# opencv version has been changed to match a PR fixing a bug
+# albumentations==0.4.3
+# opencv-python==4.5.5.62
+# pudb==2019.2
+# imageio==2.9.0
+# imageio-ffmpeg==0.4.2
+# pytorch-lightning==1.0.8
+# omegaconf==2.0.0
+# test-tube>=0.7.5
+# streamlit>=0.73.1
+# einops==0.3.0
+# more-itertools>=8.0.0
+# transformers==4.3.1
+
+# PR that makes VQGAN pip-installable
+git+https://github.com/bfirsh/taming-transformers.git@7a6e64ee
