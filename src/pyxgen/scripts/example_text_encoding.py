@@ -3,15 +3,15 @@ Example text encoding using CLIP.
 
 Usage:
     example_test_encoding.py <text>
-    example_test_encoding.py <text> --model=<name>
+    example_test_encoding.py <text> --clip-model=<name>
 
 Options:
-    -h --help        Show this screen.
-    --model=<name>   Specify the CLIP model to use to encode the text. The possible model names are 'RN50',
-                     'RN101', 'RN50x4', 'RN50x16', 'RN50x64', 'ViT-B/32', 'ViT-B/16', 'ViT-L/14' and 'ViT-L/14@336px'.
-                     All CLIP models have an image and a text encoder, and are specified by their image encoder's name.
-                     Here, we are interested in the text encoder, but we still need to specify the corresponding image
-                     encoder's name.
+    -h --help             Show this screen.
+    --clip-model=<name>   Specify the CLIP model to use to encode the text. The possible model names are 'RN50',
+                          'RN101', 'RN50x4', 'RN50x16', 'RN50x64', 'ViT-B/32', 'ViT-B/16', 'ViT-L/14' and 'ViT-L/14@336px'.
+                          All CLIP models have an image and a text encoder, and are specified by their image encoder's name.
+                          Here, we are interested in the text encoder, but we still need to specify the corresponding image
+                          encoder's name.
 """
 
 import clip
@@ -24,7 +24,7 @@ from pyxgen.clip_utils import encode_text, load_clip_model
 def main():
     arguments = docopt(__doc__)
     text = arguments['<text>']
-    model_name = arguments['--model']
+    model_name = arguments['--clip-model']
     if model_name is None:
         model_name = "ViT-B/32"
 
