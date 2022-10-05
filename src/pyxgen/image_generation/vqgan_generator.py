@@ -119,7 +119,7 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
     cos = CosineSimilarity()
     to_pil = ToPILImage()
 
-    augmenter = RandomTransforms(n_crops=4, crop_size=(clip_model.visual.input_resolution, clip_model.visual.input_resolution))
+    augmenter = RandomTransforms(n_crops=16, crop_size=(clip_model.visual.input_resolution, clip_model.visual.input_resolution))
     repeated_text_features = text_features.repeat(augmenter.n_crops, 1)
 
     # Get the initial z-vector from the initial image
@@ -173,7 +173,7 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
         alpha *= alpha_decay
         lr_scheduler.step()
 
-        if i % 10 == 0:
+        if i % 50 == 0:
             with torch.no_grad():
                 image_features = clip_model.encode_image(resize_to_clip_size(image))
                 similarity = cos(text_features, image_features)
