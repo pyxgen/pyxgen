@@ -8,25 +8,8 @@ from omegaconf import OmegaConf
 from torch.nn import functional as F
 import numpy as np
 from torch.optim.lr_scheduler import StepLR
-from torchvision.transforms import Compose, ToPILImage, RandomCrop, Resize, ColorJitter, RandomPerspective, RandomHorizontalFlip, GaussianBlur
-
-
-class RandomTransforms:
-    def __init__(self, n_crops, crop_size) -> None:
-
-        self.n_crops = n_crops
-        self.crop_size = crop_size
-
-    def apply_random_transforms(self, image: torch.Tensor):
-        repeated_images = image.repeat(self.n_crops, 1, 1, 1)
-        transformed_images = RandomCrop(self.crop_size)(repeated_images)
-        # transformed_images = ColorJitter(brightness=0.0, contrast=0.0, saturation=0.0, hue=0.1)(transformed_images)
-        transformed_images = RandomPerspective(distortion_scale=0.8, p=1.0)(transformed_images)
-        transformed_images = RandomHorizontalFlip(p=0.5)(transformed_images)
-        # transformed_images = GaussianBlur(3, sigma=(0.01, 0.05))(transformed_images)
-
-        return transformed_images
-
+from torchvision.transforms import Compose, ToPILImage
+from pyxgen.image_generation.transforms import RandomTransforms
 
 # Taken from pixray (https://github.com/pixray/pixray)
 class ReplaceGrad(torch.autograd.Function):
@@ -87,7 +70,7 @@ def quantize(z: torch.Tensor, codebook: torch.Tensor):
     """
 
     # d is the squared L2-norm of the difference between the vectors in z and all vectors in the codebook
-    d = (z ** 2).sum(dim=-1, keepdim=True) + (codebook ** 2).sum(dim=1) - 2 * z @ codebook.T
+    d = (z**2).sum(dim=-1, keepdim=True) + (codebook**2).sum(dim=1) - 2 * z @ codebook.T
 
     # Select the indices where the L2-distance is minimized
     indices = d.argmin(-1)
@@ -150,10 +133,10 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
     # z-vector regularization (see section 2.4 from VQGAN-CLIP paper https://arxiv.org/abs/2204.08583)
     # It's not very clearly explained, so we start with a given value for alpha, and decay it such that it reaches a given end value
     # The decay factor is computed dynamically based on values of alpha_begin and alpha_end
-    alpha_begin = 0.
-    alpha_end = 0.
-    if alpha_begin == 0. or alpha_end == 0.:
-        alpha_decay = 1.
+    alpha_begin = 0.0
+    alpha_end = 0.0
+    if alpha_begin == 0.0 or alpha_end == 0.0:
+        alpha_decay = 1.0
     else:
         alpha_decay = np.exp((np.log(alpha_end) - np.log(alpha_begin)) / n_iterations)
     alpha = alpha_begin
@@ -163,9 +146,7 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
     for i in range(n_iterations):
         print(f"Iteration {i}/{n_iterations}")
 
-        z_q = quantize(
-            z_vector.movedim(1, 3), vqgan_model.quantize.embedding.weight
-        ).movedim(3, 1)
+        z_q = quantize(z_vector.movedim(1, 3), vqgan_model.quantize.embedding.weight).movedim(3, 1)
 
         image = vqgan_model.decode(z_q)
 
@@ -184,8 +165,8 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
         transformed_images = augmenter.apply_random_transforms(image)
         crops_features = clip_model.encode_image(transformed_images)
 
-        regularization_loss = alpha * (z_q ** 2).mean()  # Penalize z_q magnitude in L2 norm
-        loss = - cos(repeated_text_features, crops_features).mean() + regularization_loss
+        regularization_loss = alpha * (z_q**2).mean()  # Penalize z_q magnitude in L2 norm
+        loss = -cos(repeated_text_features, crops_features).mean() + regularization_loss
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()

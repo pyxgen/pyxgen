@@ -1,0 +1,4 @@
+protobuf==3.20
+torch==1.13.0.dev20220824
+torchaudio==0.13.0.dev20220824
+torchvision==0.14.0.dev20220824

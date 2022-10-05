@@ -27,14 +27,14 @@ from torchvision.transforms import Compose
 def main():
     arguments = docopt(__doc__)
 
-    text = arguments['<text>']
+    text = arguments["<text>"]
 
-    model_name = arguments['--clip-model']
+    model_name = arguments["--clip-model"]
     if model_name is None:
         model_name = "ViT-B/32"
 
     if model_name not in clip.available_models():
-        raise ValueError(f'No CLIP model named {model_name}')
+        raise ValueError(f"No CLIP model named {model_name}")
 
     print(f'Using model {model_name} to encode text "{text}"')
 
@@ -47,32 +47,32 @@ def main():
     print("Initializing image")
 
     # resolution = model.visual.input_resolution
-    resolution = 256
+    resolution = 333
     print(resolution)
 
-    init = arguments['--init']
+    init = arguments["--init"]
     if init is None:
-        init = 'normal'
+        init = "normal"
 
-    if init == 'normal':
-        dummy_image = torch.normal(mean=0., std=1., size=(1, 3, resolution, resolution), device=device, requires_grad=True)
-    elif init == 'zeros':
+    if init == "normal":
+        dummy_image = torch.normal(mean=0.0, std=1.0, size=(1, 3, resolution, resolution), device=device, requires_grad=True)
+    elif init == "zeros":
         dummy_image = torch.zeros(size=(1, 3, resolution, resolution), device=device, requires_grad=True)
     elif init == "perlin":
         preprocess_without_resize = Compose(preprocess.transforms[2:])
-        dummy_image = preprocess_without_resize(Image.open("sample_images/perlin2.png")).unsqueeze(0).to(device)
+        dummy_image = preprocess_without_resize(Image.open("sample_images/perlin333.png")).unsqueeze(0).to(device)
     else:
-        raise ValueError(f'No image initialization scheme named {init}')
+        raise ValueError(f"No image initialization scheme named {init}")
 
     print(dummy_image.shape)
 
-    generator_name = arguments['--generator']
+    generator_name = arguments["--generator"]
     if generator_name is None:
-        generator_name = 'baseline'
+        generator_name = "baseline"
 
-    if generator_name == 'baseline':
+    if generator_name == "baseline":
         baseline_generator(model, preprocess, dummy_image, text_features)
-    elif generator_name == 'vqgan':
+    elif generator_name == "vqgan":
         vqgan_generator(model, preprocess, dummy_image, text_features, device=device)
 
 

@@ -4,6 +4,9 @@
 # PyCharm project
 .idea/
 
+# VSCode project
+.vscode/
+
 # Data folder
 data/
 
