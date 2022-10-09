@@ -120,7 +120,7 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
     cos = CosineSimilarity()
     to_pil = ToPILImage()
 
-    augmenter = RandomTransforms(n_crops=24, crop_size=(clip_model.visual.input_resolution, clip_model.visual.input_resolution), intensity=1)
+    augmenter = RandomTransforms(n_crops=16, crop_size=(clip_model.visual.input_resolution, clip_model.visual.input_resolution))
     repeated_text_features = text_features.repeat(augmenter.n_crops, 1)
 
     # Get the initial z-vector from the initial image
