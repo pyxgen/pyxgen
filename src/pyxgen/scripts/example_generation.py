@@ -2,7 +2,7 @@
 Example image generation using CLIP.
 
 Usage:
-    example_test_encoding.py <text> [--clip-model=<name>] [--init=<name>] [--generator=<name>]
+    example_test_encoding.py <text> [--clip-model=<name>] [--init=<name>] [--generator=<name>] [--seed=<name>]
 
 Options:
     -h --help             Show this screen.
@@ -12,6 +12,7 @@ Options:
                           image encoder's name.
     --init=<name>         Specify how the image is initialized. Possible init values are 'normal' and 'zeros'.
     --generator=<name>    Specify which generator to use. Possible generators are 'baseline' and 'vqgan'.
+    --seed=<name>         Specify the seed for torch.random
 """
 
 import clip
@@ -46,9 +47,11 @@ def main():
 
     print("Initializing image")
 
-    # resolution = model.visual.input_resolution
     resolution = 333
     print(resolution)
+
+    seed = arguments["--seed"]
+    torch.manual_seed(seed if seed is not None else 2022)
 
     init = arguments["--init"]
     if init is None:

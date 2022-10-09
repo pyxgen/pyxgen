@@ -10,6 +10,7 @@ import numpy as np
 from torch.optim.lr_scheduler import StepLR
 from torchvision.transforms import Compose, ToPILImage
 from pyxgen.image_generation.transforms import RandomTransforms
+from tqdm import tqdm
 
 # Taken from pixray (https://github.com/pixray/pixray)
 class ReplaceGrad(torch.autograd.Function):
@@ -119,7 +120,7 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
     cos = CosineSimilarity()
     to_pil = ToPILImage()
 
-    augmenter = RandomTransforms(n_crops=4, crop_size=(clip_model.visual.input_resolution, clip_model.visual.input_resolution))
+    augmenter = RandomTransforms(n_crops=24, crop_size=(clip_model.visual.input_resolution, clip_model.visual.input_resolution), intensity=1)
     repeated_text_features = text_features.repeat(augmenter.n_crops, 1)
 
     # Get the initial z-vector from the initial image
@@ -143,8 +144,8 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
 
     resize_to_clip_size = Compose(preprocess.transforms[:2])
 
-    for i in range(n_iterations):
-        print(f"Iteration {i}/{n_iterations}")
+    for i in tqdm(range(n_iterations)):
+        # print(f"Iteration {i}/{n_iterations}")
 
         z_q = quantize(z_vector.movedim(1, 3), vqgan_model.quantize.embedding.weight).movedim(3, 1)
 
@@ -173,7 +174,7 @@ def vqgan_generator(clip_model: ClipModel, preprocess: Compose, initial_image: t
         alpha *= alpha_decay
         lr_scheduler.step()
 
-        if i % 10 == 0:
+        if i % 50 == 0:
             with torch.no_grad():
                 image_features = clip_model.encode_image(resize_to_clip_size(image))
                 similarity = cos(text_features, image_features)
