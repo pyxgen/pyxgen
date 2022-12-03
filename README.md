@@ -19,7 +19,7 @@ in a fresh virtual environment. It should install all dependencies, including CL
 Currently, we can only encode some text using a CLIP text encoder.
 To do this, run
 ```
-python example_test_encoding.py "A text to encode" --model="ViT-B/32"
+python example_text_encoding.py "A text to encode" --model="ViT-B/32"
 ```
 in `src/scripts/`. This will encode the text into a feature tensor using a pre-trained CLIP model.
 
