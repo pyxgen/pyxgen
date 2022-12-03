@@ -1,6 +1,7 @@
 # [WORK IN PROGRESS] pyxgen
 Pixel art generation from text prompts using AI.
 
+_**The project is currently paused in a state that does not give good results and that is not yet specific to pixel art.**_
 ### Pipeline
 - Text encoding using [CLIP](https://github.com/openai/CLIP)
 
